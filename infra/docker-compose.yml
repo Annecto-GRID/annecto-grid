@@ -1,0 +1,29 @@
+# Local run of the API and the web app in containers.
+#   docker compose -f infra/docker-compose.yml up --build
+# Web: http://localhost:8080  API: http://localhost:3000
+name: annecto-grid
+
+services:
+  api:
+    build:
+      context: ..
+      dockerfile: infra/docker/api.Dockerfile
+      args:
+        GIT_COMMIT: ${GIT_COMMIT:-unknown}
+    environment:
+      APP_ENV: ${APP_ENV:-development}
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+    ports:
+      - "3000:3000"
+
+  web:
+    build:
+      context: ..
+      dockerfile: infra/docker/web.Dockerfile
+      args:
+        GIT_COMMIT: ${GIT_COMMIT:-unknown}
+    depends_on:
+      api:
+        condition: service_healthy
+    ports:
+      - "8080:8080"

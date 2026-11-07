@@ -1,0 +1,16 @@
+{
+  "name": "@annecto-grid/contracts",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Versioned API contracts (types and JSON Schema) and events between modules.",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit -p tsconfig.json"
+  },
+  "devDependencies": {
+    "typescript": "catalog:"
+  }
+}

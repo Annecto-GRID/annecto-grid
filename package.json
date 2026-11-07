@@ -1,0 +1,33 @@
+{
+  "name": "annecto-grid",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Annecto Grid – modular operations system for public transport operators.",
+  "type": "module",
+  "packageManager": "pnpm@10.28.0",
+  "engines": {
+    "node": ">=22.18 <23"
+  },
+  "scripts": {
+    "dev:api": "pnpm --filter @annecto-grid/api dev",
+    "dev:web": "pnpm --filter @annecto-grid/web dev",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "typecheck": "pnpm -r --parallel typecheck",
+    "i18n:check": "pnpm --filter @annecto-grid/i18n check",
+    "test": "pnpm -r test",
+    "build": "pnpm -r build",
+    "check": "pnpm lint && pnpm format:check && pnpm typecheck && pnpm i18n:check && pnpm test && pnpm build"
+  },
+  "devDependencies": {
+    "@eslint/js": "catalog:",
+    "eslint": "catalog:",
+    "eslint-config-prettier": "catalog:",
+    "eslint-plugin-react-hooks": "catalog:",
+    "globals": "catalog:",
+    "prettier": "catalog:",
+    "typescript": "catalog:",
+    "typescript-eslint": "catalog:"
+  }
+}

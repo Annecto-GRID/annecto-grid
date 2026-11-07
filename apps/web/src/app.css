@@ -1,0 +1,123 @@
+/* App frame for the M1 skeleton. Moves into @annecto-grid/ui as components in M3. */
+.hdr {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  background: var(--hdr-bg);
+  color: var(--hdr-ink);
+  border-bottom: 1px solid var(--line);
+}
+.hdr-in {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 52px;
+  padding: 0 var(--pad);
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  margin-right: auto;
+}
+.mark {
+  width: 30px;
+  height: 30px;
+  border-radius: 7px;
+  background: var(--accent);
+  color: var(--accent-ink);
+  display: grid;
+  place-items: center;
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.02em;
+  flex: none;
+}
+.wordmark {
+  font-weight: 700;
+  font-size: var(--fs-md);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.seg {
+  display: inline-flex;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r);
+  overflow: hidden;
+}
+.seg button {
+  border: 0;
+  background: var(--surface);
+  padding: 5px 10px;
+  font-size: var(--fs-sm);
+  cursor: pointer;
+}
+.seg button + button {
+  border-left: 1px solid var(--line-strong);
+}
+.seg button[aria-pressed="true"] {
+  background: var(--accent-soft);
+  color: var(--accent-text);
+  font-weight: 500;
+}
+.page {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 24px var(--pad) 48px;
+  display: grid;
+  gap: 16px;
+}
+.page:focus {
+  outline: none;
+}
+.page h1 {
+  font-size: var(--fs-xl);
+}
+.card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+  padding: 16px 18px;
+}
+.card h2 {
+  font-size: var(--fs-md);
+  margin-bottom: 10px;
+}
+.kv {
+  display: grid;
+  grid-template-columns: minmax(120px, 160px) 1fr;
+  gap: 6px 16px;
+  margin: 0;
+}
+.kv dt {
+  color: var(--ink-3);
+}
+.kv dd {
+  margin: 0;
+}
+.pill {
+  display: inline-block;
+  padding: 1px 8px;
+  border-radius: 999px;
+  font-size: var(--fs-sm);
+  background: var(--st-gray-bg);
+  color: var(--st-gray);
+}
+.pill.ok {
+  background: var(--st-green-bg);
+  color: var(--st-green);
+}
+.pill.bad {
+  background: var(--st-red-bg);
+  color: var(--st-red);
+}
+.note {
+  font-size: var(--fs-sm);
+}
+@media (max-width: 480px) {
+  .wordmark {
+    font-size: var(--fs);
+  }
+}

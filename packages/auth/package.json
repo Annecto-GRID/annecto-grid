@@ -1,0 +1,16 @@
+{
+  "name": "@annecto-grid/auth",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Sign-in, sessions, memberships, roles and permissions (from M3).",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit -p tsconfig.json"
+  },
+  "devDependencies": {
+    "typescript": "catalog:"
+  }
+}
