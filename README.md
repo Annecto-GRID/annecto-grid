@@ -67,5 +67,5 @@ Stoppa med `docker compose -f infra/docker-compose.yml down`.
 ## Arbetsregler
 
 Ändringar görs via pull request med gröna kontroller. Se [docs/workflow.md](docs/workflow.md),
-bland annat hur skyddet för `main` slås på. Tekniska beslut finns i
+bland annat läget för skyddet av `main`. Tekniska beslut finns i
 [docs/decisions.md](docs/decisions.md).
