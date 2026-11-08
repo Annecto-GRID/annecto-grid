@@ -7,9 +7,19 @@
 3. Öppna en pull request. Mallen frågar efter vad, varför, påverkade moduler, hur det testats och
    kända begränsningar.
 4. GitHub Actions kör jobben `checks` och `containers`. Båda måste vara gröna.
-5. Granska och slå ihop med *Squash and merge*.
+5. Kontrollera att båda är gröna, granska och slå ihop med *Squash and merge*.
+6. Ingen pushar direkt till `main`.
 
-## Skydd för `main` (görs en gång, kräver administratörsrätt)
+## Skydd för `main`
+
+**Läge nu (2026-11-08): inte påslaget.** Repot är privat och ägs av ett GitHub-gratiskonto, och där
+finns varken regeluppsättningar eller grenskydd. GitHub svarar *"Upgrade to GitHub Pro or make
+this repository public"*. Tills vidare gäller reglerna ovan som arbetsrutin: GitHub hindrar inte en
+sammanslagning när kontrollerna fallerar, så det måste kontrolleras före sammanslagningen.
+
+Skyddet slås på när repot får GitHub Pro eller flyttas till en organisation med betald plan.
+Senast inför M6 (första riktiga företag), eller tidigare om fler personer ska arbeta i koden.
+Claudes arbetsmiljö kan inte ändra grenskydd, så det gör du själv:
 
 GitHub → repot → **Settings** → **Rules** → **Rulesets** → **New ruleset** → **New branch ruleset**:
 
