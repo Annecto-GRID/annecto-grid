@@ -1,0 +1,30 @@
+{
+  "name": "@annecto-grid/web",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Annecto Grid web app (React).",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@annecto-grid/contracts": "workspace:*",
+    "@annecto-grid/i18n": "workspace:*",
+    "@annecto-grid/ui": "workspace:*",
+    "react": "catalog:",
+    "react-dom": "catalog:"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
+    "@vitejs/plugin-react": "catalog:",
+    "typescript": "catalog:",
+    "vite": "catalog:",
+    "vitest": "catalog:"
+  }
+}

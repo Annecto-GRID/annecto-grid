@@ -1,0 +1,110 @@
+/* ==========================================================================
+   Annecto Grid – design tokens (B-017).
+   Neutral base; the accent is configured per company (--accent is set at runtime, M3).
+   Status colours are semantic and independent of the accent.
+   Carried over unchanged from Fleet Manager prototype v2.
+   ========================================================================== */
+:root {
+  color-scheme: light;
+  --bg: #f3f4f6;
+  --surface: #ffffff;
+  --surface-2: #f8f9fa;
+  --surface-3: #eef0f2;
+  --ink: #16191d;
+  --ink-2: #4a525c;
+  --ink-3: #6b737d;
+  --line: #dde1e5;
+  --line-strong: #c4cad0;
+  --hdr-bg: #ffffff;
+  --hdr-ink: #16191d;
+  --focus: #2f6fdb;
+  --overlay: rgba(16, 20, 24, 0.38);
+  --shadow: 0 1px 2px rgba(16, 20, 24, 0.06), 0 8px 24px rgba(16, 20, 24, 0.08);
+  --shadow-lg: 0 12px 40px rgba(16, 20, 24, 0.18);
+
+  --accent: #1f5fbf;
+  --accent-ink: #ffffff;
+  --accent-soft: color-mix(in srgb, var(--accent) 10%, var(--surface));
+  --accent-text: color-mix(in srgb, var(--accent) 82%, var(--ink));
+
+  --st-green: #1c7a46;
+  --st-green-bg: #e3f2e9;
+  --st-orange: #a35a00;
+  --st-orange-bg: #fbeedb;
+  --st-blue: #1f5fbf;
+  --st-blue-bg: #e2ebf9;
+  --st-purple: #6a46a8;
+  --st-purple-bg: #eee8f7;
+  --st-gray: #5d6670;
+  --st-gray-bg: #eceef0;
+  --st-red: #b42318;
+  --st-red-bg: #fbe5e3;
+  --st-teal: #0d7179;
+  --st-teal-bg: #ddf0f1;
+  --st-brown: #7a5230;
+  --st-brown-bg: #f2e9e1;
+  --warn: #8a6400;
+  --warn-bg: #fdf1c9;
+  --warn-line: #e4b93a;
+  --danger: #b42318;
+  --danger-bg: #fbe5e3;
+  --ok: #1c7a46;
+
+  /* Roboto is self-hosted from M3; until then the system font is used when Roboto is not installed. */
+  --font: Roboto, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "Roboto Mono", ui-monospace, Menlo, Consolas, monospace;
+  --fs-xs: 11.5px;
+  --fs-sm: 12.5px;
+  --fs: 13.5px;
+  --fs-md: 15px;
+  --fs-lg: 18px;
+  --fs-xl: 22px;
+  --r: 6px;
+  --r-sm: 4px;
+  --gap: 12px;
+  --pad: clamp(12px, 2vw, 24px);
+  --row: 38px;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #0f1216;
+  --surface: #171b20;
+  --surface-2: #1c2127;
+  --surface-3: #232930;
+  --ink: #e7eaee;
+  --ink-2: #b2bac3;
+  --ink-3: #8b949e;
+  --line: #2b323a;
+  --line-strong: #3a434d;
+  --hdr-bg: #13171b;
+  --hdr-ink: #e7eaee;
+  --focus: #79a8ff;
+  --overlay: rgba(0, 0, 0, 0.55);
+  --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 8px 24px rgba(0, 0, 0, 0.35);
+  --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.6);
+  --accent-soft: color-mix(in srgb, var(--accent) 20%, var(--surface));
+  --accent-text: color-mix(in srgb, var(--accent) 55%, #ffffff);
+  --st-green: #5fcf8f;
+  --st-green-bg: #173325;
+  --st-orange: #f0a548;
+  --st-orange-bg: #3a2810;
+  --st-blue: #7fb0ff;
+  --st-blue-bg: #172a47;
+  --st-purple: #b99cf0;
+  --st-purple-bg: #2a2140;
+  --st-gray: #a3acb6;
+  --st-gray-bg: #262c33;
+  --st-red: #ff8a80;
+  --st-red-bg: #3d1a17;
+  --st-teal: #5ccdd4;
+  --st-teal-bg: #113235;
+  --st-brown: #d4a37a;
+  --st-brown-bg: #33251a;
+  --warn: #f2c44b;
+  --warn-bg: #3a2f0e;
+  --warn-line: #8f7215;
+  --danger: #ff8a80;
+  --danger-bg: #3d1a17;
+  --ok: #5fcf8f;
+}

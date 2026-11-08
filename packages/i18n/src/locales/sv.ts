@@ -1,0 +1,41 @@
+/**
+ * Swedish texts. Swedish is the default language: every key is defined here first,
+ * and `en` and `de` must have exactly the same keys (checked in the build).
+ */
+export const sv = {
+  "app.product": "Annecto Grid",
+  "app.skip": "Hoppa till innehållet",
+  "app.language": "Språk",
+  "app.skeletonNote": "Kodskelett (M1). Ingen verksamhetsfunktion ännu.",
+  "lang.sv": "Svenska",
+  "lang.en": "English",
+  "lang.de": "Deutsch",
+
+  "status.title": "Systemstatus",
+  "status.web": "Webbgränssnitt",
+  "status.api": "API",
+  "status.version": "Version",
+  "status.commit": "Byggd från",
+  "status.state": "Status",
+  "status.checking": "Kontrollerar …",
+  "status.connected": "Ansluten",
+  "status.unreachable": "Ingen kontakt med API:t",
+  "status.unknown": "Okänd",
+
+  "err.required": "Uppgiften är obligatorisk.",
+  "err.integer": "Ange ett heltal.",
+  "err.number": "Ange ett tal.",
+  "err.range": "Ange ett värde mellan {min} och {max}.",
+  "err.tooLong": "Högst {max} tecken.",
+  "err.date": "Ange ett giltigt datum (ÅÅÅÅ-MM-DD).",
+  "err.future": "Datumet kan inte ligga i framtiden.",
+  "err.unknownItem": "Värdet finns inte i rullistan.",
+  "err.reg": "Använd 2–10 tecken: versaler A–Z (utan å, ä, ö) och siffror.",
+  "err.vin": "VIN ska ha 17 tecken: A–Z och 0–9 utan I, O och Q.",
+  "err.axle": "Skriv hjulpositioner x drivna hjul, till exempel 4x2 eller 6x4.",
+  "err.categoryClass": "Fordonsgruppen hör inte till vald fordonsklass.",
+  "err.inspBeforeReg": "Besiktningen kan inte vara före registreringsdatumet.",
+  "err.dupFleet": "Individnumret används redan av ett annat fordon.",
+  "err.dupReg": "Registreringsnumret används redan av ett annat fordon.",
+  "err.dupVin": "Chassinumret används redan av ett annat fordon.",
+} as const satisfies Record<string, string>;

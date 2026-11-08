@@ -1,0 +1,19 @@
+{
+  "name": "@annecto-grid/fleet-core",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Fleet Manager core logic: validation, inspection, history, mileage, statistics. No DOM, database or network.",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}

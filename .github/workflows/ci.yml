@@ -1,0 +1,88 @@
+# Automatic checks for every pull request and every change in main (M1 specification, section 5).
+# A pull request cannot be merged unless both jobs pass (required status checks, see docs/workflow.md).
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  checks:
+    name: checks
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - name: 1. Install (locked dependencies)
+        run: pnpm install --frozen-lockfile
+
+      - name: 2. Code style (ESLint, Prettier)
+        run: |
+          pnpm lint
+          pnpm format:check
+
+      - name: 3. Type check
+        run: pnpm typecheck
+
+      - name: 4. i18n check (all keys in sv, en, de)
+        run: pnpm i18n:check
+
+      - name: 5. Unit tests
+        run: pnpm test
+
+      - name: 6. Build api and web
+        run: pnpm build
+        env:
+          GIT_COMMIT: ${{ github.sha }}
+
+  containers:
+    name: containers
+    needs: checks
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    env:
+      GIT_COMMIT: ${{ github.sha }}
+      COMPOSE_FILE: infra/docker-compose.yml
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 6. Build container images (not published until M2)
+        run: docker compose build
+
+      - name: Start api and web
+        run: docker compose up --detach --wait --wait-timeout 60
+
+      - name: Smoke test
+        run: |
+          set -eu
+          curl -fsS http://localhost:3000/health
+          echo
+          curl -fsS http://localhost:8080/ | grep -q '<div id="root">'
+          version=$(curl -fsS http://localhost:8080/api/version)
+          echo "$version"
+          echo "$version" | grep -q '"name":"Annecto Grid"'
+          echo "$version" | grep -q "\"commit\":\"${GIT_COMMIT}\""
+
+      - name: Logs
+        if: failure()
+        run: docker compose logs
+
+      - name: Stop
+        if: always()
+        run: docker compose down --volumes

@@ -1,0 +1,24 @@
+{
+  "name": "@annecto-grid/api",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Annecto Grid API server (Fastify).",
+  "type": "module",
+  "scripts": {
+    "dev": "node --watch src/server.ts",
+    "build": "node scripts/build.mjs",
+    "start": "node --enable-source-maps dist/server.mjs",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@annecto-grid/contracts": "workspace:*",
+    "fastify": "catalog:"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "esbuild": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}
