@@ -1,0 +1,148 @@
+# Deployment to the Hetzner server (M2, B-055).
+#
+# - Test: automatic after every green CI run on main.
+# - Production: only when started by hand (Actions -> Deploy -> Run workflow -> prod),
+#   with the commit that should go live. Normally a commit that is already running in test.
+#
+# Needs in Settings -> Secrets and variables -> Actions (see docs/deploy.md):
+#   secrets   DEPLOY_HOST, DEPLOY_SSH_KEY, DEPLOY_KNOWN_HOSTS
+#   variables APP_DOMAIN, ACME_EMAIL
+name: Deploy
+
+on:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Environment"
+        type: choice
+        options: [test, prod]
+        default: test
+      sha:
+        description: "Commit (full 40-character sha). Empty = latest on main."
+        type: string
+        required: false
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  deploy:
+    name: deploy
+    # After CI: only when CI passed for a push to main (not for pull requests).
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push')
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    concurrency:
+      group: deploy-${{ github.event.inputs.environment || 'test' }}
+      cancel-in-progress: false
+    env:
+      ENV_NAME: ${{ github.event.inputs.environment || 'test' }}
+      INPUT_SHA: ${{ github.event.inputs.sha }}
+      RUN_SHA: ${{ github.event.workflow_run.head_sha }}
+      APP_DOMAIN: ${{ vars.APP_DOMAIN }}
+      ACME_EMAIL: ${{ vars.ACME_EMAIL }}
+      DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+    steps:
+      - name: Resolve commit and registry
+        id: meta
+        run: |
+          set -eu
+          sha="${INPUT_SHA:-${RUN_SHA:-$GITHUB_SHA}}"
+          if ! echo "$sha" | grep -Eq '^[0-9a-f]{40}$'; then
+            echo "::error::Commit must be a full 40-character sha, got '$sha'"; exit 1
+          fi
+          for v in APP_DOMAIN ACME_EMAIL DEPLOY_HOST; do
+            if [ -z "${!v}" ]; then echo "::error::$v is not set (see docs/deploy.md)"; exit 1; fi
+          done
+          echo "sha=$sha" >> "$GITHUB_OUTPUT"
+          echo "registry=ghcr.io/$(echo "$GITHUB_REPOSITORY" | tr '[:upper:]' '[:lower:]')" >> "$GITHUB_OUTPUT"
+          if [ "$ENV_NAME" = prod ]; then echo "host=app.$APP_DOMAIN" >> "$GITHUB_OUTPUT"; else echo "host=test.$APP_DOMAIN" >> "$GITHUB_OUTPUT"; fi
+
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ steps.meta.outputs.sha }}
+
+      - name: Log in to GitHub Container Registry
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: printf '%s' "$GH_TOKEN" | docker login ghcr.io -u "$GITHUB_ACTOR" --password-stdin
+
+      - name: Build and push images
+        env:
+          SHA: ${{ steps.meta.outputs.sha }}
+          REGISTRY: ${{ steps.meta.outputs.registry }}
+        run: |
+          set -eu
+          for app in api web; do
+            image="$REGISTRY/$app:$SHA"
+            if docker manifest inspect "$image" >/dev/null 2>&1; then
+              echo "$image already exists"
+              continue
+            fi
+            docker build -f "infra/docker/$app.Dockerfile" \
+              --build-arg GIT_COMMIT="$SHA" \
+              --label "org.opencontainers.image.source=https://github.com/$GITHUB_REPOSITORY" \
+              --label "org.opencontainers.image.revision=$SHA" \
+              -t "$image" .
+            docker push "$image"
+          done
+
+      - name: SSH key
+        env:
+          SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          KNOWN_HOSTS: ${{ secrets.DEPLOY_KNOWN_HOSTS }}
+        run: |
+          set -eu
+          install -d -m 700 ~/.ssh
+          printf '%s\n' "$SSH_KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          printf '%s\n' "$KNOWN_HOSTS" > ~/.ssh/known_hosts
+          printf 'Host grid\n  HostName %s\n  User deploy\n  IdentityFile ~/.ssh/deploy_key\n  StrictHostKeyChecking yes\n' "$DEPLOY_HOST" > ~/.ssh/config
+
+      - name: Copy deployment files to the server
+        run: scp -q infra/deploy/deploy.sh infra/deploy/app.compose.yml infra/deploy/edge.compose.yml infra/deploy/Caddyfile grid:/srv/grid/deploy/
+
+      - name: Deploy
+        env:
+          SHA: ${{ steps.meta.outputs.sha }}
+          REGISTRY: ${{ steps.meta.outputs.registry }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -eu
+          # The token is only valid during this job; the server logs out again afterwards.
+          printf '%s' "$GH_TOKEN" | ssh grid "docker login ghcr.io -u '$GITHUB_ACTOR' --password-stdin >/dev/null"
+          status=0
+          ssh grid "bash /srv/grid/deploy/deploy.sh '$ENV_NAME' '$SHA' '$REGISTRY' '$APP_DOMAIN' '$ACME_EMAIL'" || status=$?
+          ssh grid "docker logout ghcr.io >/dev/null" || true
+          exit $status
+
+      - name: Check https://${{ steps.meta.outputs.host }}
+        env:
+          SHA: ${{ steps.meta.outputs.sha }}
+          HOST: ${{ steps.meta.outputs.host }}
+        run: |
+          set -u
+          # The first deployment can take a minute while Caddy fetches the HTTPS certificate.
+          for i in $(seq 1 30); do
+            body=$(curl -fsS --max-time 10 "https://$HOST/api/version" 2>/dev/null) || body=""
+            if echo "$body" | grep -q "\"commit\":\"$SHA\""; then
+              echo "$body"
+              echo "OK: https://$HOST runs $SHA"
+              exit 0
+            fi
+            sleep 10
+          done
+          echo "::error::https://$HOST/api/version does not answer with commit $SHA. Last answer: ${body:-none}"
+          ssh grid "docker compose -p grid-edge -f /srv/grid/deploy/edge.compose.yml --env-file /srv/grid/edge/.env logs --tail 50" || true
+          exit 1
+
+      - name: Remove SSH key
+        if: always()
+        run: rm -f ~/.ssh/deploy_key

@@ -1,0 +1,27 @@
+# Caddy, shared by the test and production environments. Started by deploy.sh:
+#   docker compose -p grid-edge -f /srv/grid/deploy/edge.compose.yml --env-file /srv/grid/edge/.env up -d
+services:
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    environment:
+      APP_DOMAIN: ${APP_DOMAIN:?APP_DOMAIN is missing}
+      ACME_EMAIL: ${ACME_EMAIL:?ACME_EMAIL is missing}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    networks:
+      - edge
+
+volumes:
+  caddy_data:
+  caddy_config:
+
+networks:
+  edge:
+    external: true

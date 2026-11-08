@@ -1,0 +1,30 @@
+# One environment (test or prod) of Annecto Grid. Started by deploy.sh with the project name
+# grid-<environment>, so test and production never share containers or networks.
+# The web container is reachable for Caddy on the shared network "edge" as grid-<environment>-web;
+# the API is only reachable inside the environment's own network.
+services:
+  api:
+    image: ${REGISTRY:?}/api:${IMAGE_TAG:?}
+    restart: unless-stopped
+    environment:
+      APP_ENV: ${GRID_ENV:?}
+      LOG_LEVEL: info
+    networks:
+      - internal
+
+  web:
+    image: ${REGISTRY:?}/web:${IMAGE_TAG:?}
+    restart: unless-stopped
+    depends_on:
+      api:
+        condition: service_healthy
+    networks:
+      internal: {}
+      edge:
+        aliases:
+          - grid-${GRID_ENV:?}-web
+
+networks:
+  internal: {}
+  edge:
+    external: true

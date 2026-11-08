@@ -19,7 +19,7 @@ packages/
   contracts/      API-kontrakt (typer och JSON Schema)
   auth/           tom grund, fylls i M3
   tenancy/        regler för migreringar; företag och databas per företag i M3
-infra/            Dockerfile per app, docker-compose för lokal körning, nginx
+infra/            Dockerfile per app, docker-compose för lokal körning, nginx, driftsättning (deploy, server)
 docs/             beslut och arbetsrutiner
 ```
 
@@ -63,6 +63,11 @@ docker compose -f infra/docker-compose.yml up --build
 - API: <http://localhost:3000/health> och <http://localhost:3000/version>
 
 Stoppa med `docker compose -f infra/docker-compose.yml down`.
+
+## Driftsättning
+
+Testmiljön uppdateras automatiskt när CI är grön på `main`; produktion startas för hand. Installation av
+servern och inställningar i GitHub: [docs/deploy.md](docs/deploy.md).
 
 ## Arbetsregler
 

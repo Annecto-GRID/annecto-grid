@@ -1,0 +1,23 @@
+# Caddy in front of all environments: HTTPS certificates (Let's Encrypt) are fetched and renewed
+# automatically. APP_DOMAIN and ACME_EMAIL come from /srv/grid/edge/.env, written by deploy.sh.
+{
+	email {$ACME_EMAIL}
+}
+
+(common) {
+	encode zstd gzip
+	header {
+		Strict-Transport-Security "max-age=31536000"
+		-Server
+	}
+}
+
+test.{$APP_DOMAIN} {
+	import common
+	reverse_proxy grid-test-web:8080
+}
+
+app.{$APP_DOMAIN} {
+	import common
+	reverse_proxy grid-prod-web:8080
+}
