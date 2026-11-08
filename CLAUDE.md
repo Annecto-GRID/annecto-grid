@@ -23,6 +23,8 @@ konflikt gäller projektets dokument *Systemarkitektur och utvecklingsprinciper*
 - Validera all indata. Hemligheter läggs aldrig i repot; nya variabler dokumenteras i `.env.example`.
 - Små, avgränsade ändringar. Bygg inte flera stora funktioner samtidigt.
 - Ändra inte `fleet-core`s beteende utan beslut; testerna beskriver prototypens beteende.
+- Prototyp och produktionskod hålls i takt: ett beslut som ändrar en prototyp ger en pull request
+  här för det som redan finns i koden (se `docs/workflow.md`).
 
 ## Arbetsflöde
 

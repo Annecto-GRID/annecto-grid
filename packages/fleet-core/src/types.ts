@@ -71,6 +71,8 @@ export interface Vehicle {
   registrationDate?: IsoDate | null;
   lastInspection?: IsoDate | null;
   odometer?: number | string | null;
+  /** Estimated range in km on a full tank or fully charged battery (B-058). Read by Planner and Dispatcher. */
+  estimatedRange?: number | string | null;
   initialOdometer?: number | null;
   info?: string | null;
   archived?: boolean;

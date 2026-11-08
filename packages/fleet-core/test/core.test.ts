@@ -1,5 +1,5 @@
 /**
- * Unit tests for Fleet Manager's core logic: 27 tests, one per area of the prototype's core tests
+ * Unit tests for Fleet Manager's core logic: 28 tests, one per area of the prototype's core tests
  * (Annecto_Grid_Fleet_Manager_Prototyp_v2, section 3). The expected values describe the prototype's
  * behaviour; the same tests pass against the prototype's original `Core` (see README).
  */
@@ -891,5 +891,21 @@ describe("fleet-core", () => {
       state: "dormant",
       reason: "noSource",
     });
+  });
+
+  it("28 validates estimated range (B-058)", () => {
+    const base = { status: "in_service", fleetNumber: "201" };
+    const ok = Core.normalizeVehicle({ ...base, estimatedRange: "320" });
+    expect(ok.estimatedRange).toBe(320);
+    expect(Core.validateVehicle(ok, {})).toEqual({});
+    expect(Core.validateVehicle(Core.normalizeVehicle({ ...base, estimatedRange: "" }), {})).toEqual({});
+    expect(Core.validateVehicle(Core.normalizeVehicle({ ...base, estimatedRange: "0" }), {})).toEqual({
+      estimatedRange: { key: "err.range", params: { min: 1, max: 5000 } },
+    });
+    expect(Core.validateVehicle(Core.normalizeVehicle({ ...base, estimatedRange: "320,5" }), {})).toEqual({
+      estimatedRange: { key: "err.integer", params: {} },
+    });
+    expect(Core.FIELDS.find((f) => f.k === "estimatedRange")).toMatchObject({ g: "tech" });
+    expect(Core.MODEL_FIELDS).not.toContain("estimatedRange");
   });
 });
