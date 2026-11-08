@@ -58,6 +58,9 @@ export const FIELDS: readonly FieldDef[] = [
   { k: "fuelId", type: "list", list: "fuels", g: "tech" },
   { k: "emissionId", type: "list", list: "emissions", g: "tech" },
   { k: "transmission", type: "trans", g: "tech" },
+  // Estimated range (km) on a full tank or fully charged battery. Standard field so that Planner
+  // and Dispatcher can read it via Fleet Manager's API (B-058).
+  { k: "estimatedRange", type: "int", g: "tech", min: 1, max: 5000 },
   { k: "registrationDate", type: "date", g: "inspection" },
   { k: "lastInspection", type: "date", g: "inspection" },
   { k: "odometer", type: "int", g: "inspection", min: 0, max: 9999999 },

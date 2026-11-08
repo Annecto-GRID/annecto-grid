@@ -9,6 +9,7 @@ hänvisning till beslutsloggen.
 | B-055 | Hetzner Cloud, PostgreSQL med en databas per företag (`grid_system` + `grid_t_<företag>`), monorepo i GitHub, driftsättning via GitHub Actions | Beslutslogg 3, *Driftsättning fas 0* |
 | M1 | TypeScript strikt, Node.js 22 LTS, pnpm workspaces, Fastify, React + Vite, PostgreSQL 16+ via Kysely med versionerade SQL-migreringar, Vitest och Playwright, ESLint + Prettier | *M1 Kodskelett – specifikation* |
 | M1 | Fleet Managers kärnlogik flyttas oförändrad till `packages/fleet-core`. Textupplösning, kontrast/logotyp och dataflödesstatus ligger under `platform/` och flyttas till `i18n`, `ui` och `tenancy` i M3 | *M1 Kodskelett – specifikation*, avsnitt 4 |
+| B-058 | Standardfältet `estimatedRange` (uppskattad räckvidd, km, heltal 1–5 000) i fältgruppen `tech`. Standardfält i stället för eget fält, så att Planner och Dispatcher kan lita på det | Beslutslogg 3 |
 
 ## Detaljer från M1
 
